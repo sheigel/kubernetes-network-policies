@@ -111,6 +111,6 @@ spec:
           - /bin/sh
         args: 
           - "-c"
-          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx1.ns1; sleep 1;done"
+          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx2.ns2; sleep 1;done"
 
 ---
