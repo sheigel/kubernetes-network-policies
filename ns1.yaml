@@ -44,23 +44,54 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: svc1-consumer
+  name: ns1-nginx1-consumer
   namespace: ns1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      role: ns1-consumer
+      app: ns1-nginx1-consumer
   template:
     metadata:
       labels:
-        role: ns1-consumer
+        app: ns1-nginx1-consumer
+        role: consumer
     spec:
       containers:
-      - name: svc1-consumer
+      - name: ns1-nginx1-consumer
         image: ubuntu
         command:
           - /bin/sh
         args: 
           - "-c"
-          - "apt update; apt install curl -y; while true; do curl -I nginx1; sleep 1;done"
+          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx1.ns1; sleep 1;done"
+
+---
+#service consumer of remote svc
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns1-nginx2-consumer
+  namespace: ns1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ns1-nginx2-consumer
+  template:
+    metadata:
+      labels:
+        app: ns1-nginx2-consumer
+        role: consumer
+    spec:
+      containers:
+      - name: ns1-nginx2-consumer
+        image: ubuntu
+        command:
+          - /bin/sh
+        args: 
+          - "-c"
+          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx2.ns2; sleep 1;done"
+
+---

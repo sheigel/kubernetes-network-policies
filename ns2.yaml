@@ -39,30 +39,59 @@ spec:
     targetPort:  80
 
 ---
-#service consumer
-
 #service consumer of local svc
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: svc2-consumer
+  name: ns2-nginx1-consumer
   namespace: ns2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      role: ns2-consumer
+      app: ns2-nginx1-consumer
   template:
     metadata:
       labels:
-        role: ns2-consumer
+        app: ns2-nginx1-consumer
+        role: consumer
     spec:
       containers:
-      - name: svc2-consumer
+      - name: ns2-nginx1-consumer
         image: ubuntu
         command:
           - /bin/sh
         args: 
           - "-c"
-          - "apt update; apt install curl -y; while true; do curl -I nginx2; sleep 1;done"
+          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx1.ns1; sleep 1;done"
+
+---
+#service consumer of remote svc
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2-nginx2-consumer
+  namespace: ns2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ns2-nginx2-consumer
+  template:
+    metadata:
+      labels:
+        app: ns2-nginx2-consumer
+        role: consumer
+    spec:
+      containers:
+      - name: ns2-nginx2-consumer
+        image: ubuntu
+        command:
+          - /bin/sh
+        args: 
+          - "-c"
+          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx2.ns2; sleep 1;done"
+
+---
