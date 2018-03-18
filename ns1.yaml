@@ -2,6 +2,25 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name:  ns1
+  labels:
+    name: ns1
+
+---
+
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: allow-ns2
+#   namespace:  ns1
+# spec:
+#   podSelector: {}
+#   policyTypes:
+#   - Ingress
+#   ingress:
+#   - from:
+#     - namespaceSelector:
+#         matchLabels:
+#           name: ns2
 
 ---
 #service to be consumed
@@ -92,6 +111,6 @@ spec:
           - /bin/sh
         args: 
           - "-c"
-          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx2.ns2; sleep 1;done"
+          - "apt update; apt install curl -y; while true; do curl -I -s -v nginx1.ns1; sleep 1;done"
 
 ---
